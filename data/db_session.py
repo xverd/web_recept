@@ -19,7 +19,7 @@ def global_init(db_file):
     print(f"Подключение к базе данных по адресу {conn_str}")
 
     engine = sa.create_engine(conn_str, echo=False)
-    __factory = orm.sessionmaker(bind=engine)
+    __factory = orm.scoped_session(orm.sessionmaker(bind=engine))
 
     from . import all_models
 
@@ -27,3 +27,8 @@ def global_init(db_file):
 
 def create_session() -> Session:
     return __factory()
+
+
+def remove_session():
+    if __factory:
+        __factory.remove()

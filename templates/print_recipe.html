@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Печать - {{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <button class="btn btn-teal no-print mb-3" onclick="window.print()">Печатать</button>
+    <h1>{{ recipe.title }}</h1>
+    <p>{{ recipe.short_description }}</p>
+    <p>{{ recipe.cuisine }} · {{ recipe.dish_type }} · {{ recipe.difficulty }} · {{ recipe.cook_time }} минут</p>
+    <h2 class="h4">Ингредиенты</h2>
+    <ul>{% for item in recipe.ingredients_list %}<li>{{ item }}</li>{% endfor %}</ul>
+    <h2 class="h4">Шаги</h2>
+    <ol>{% for step in recipe.steps_list %}<li>{{ step }}</li>{% endfor %}</ol>
+    {% if recipe.tips %}<h2 class="h4">Советы</h2><p>{{ recipe.tips }}</p>{% endif %}
+</div>
+{% endblock %}

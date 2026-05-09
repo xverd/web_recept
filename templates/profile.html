@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Профиль - CookBook{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="panel">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                {% if current_user.avatar_url %}<img class="avatar" src="{{ current_user.avatar_url }}" alt="Аватар">{% endif %}
+                <div><h1 class="h4 mb-0">{{ current_user.name }}</h1><div class="muted">@{{ current_user.username }}</div></div>
+            </div>
+            <form method="post">
+                {{ form.hidden_tag() }}
+                <div class="mb-2">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control") }}</div>
+                <div class="mb-2">{{ form.email.label(class="form-label") }} {{ form.email(class="form-control") }}</div>
+                <div class="mb-2">{{ form.phone.label(class="form-label") }} {{ form.phone(class="form-control") }}</div>
+                <div class="mb-2">{{ form.avatar_url.label(class="form-label") }} {{ form.avatar_url(class="form-control") }}</div>
+                <div class="mb-3">{{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}</div>
+                {{ form.submit(class="btn btn-teal") }}
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="panel mb-4">
+            <h2 class="h4">Избранное</h2>
+            {% for favorite in favorites %}
+                <p><a href="{{ url_for('recipe_detail', recipe_id=favorite.recipe.id) }}">{{ favorite.recipe.title }}</a> <span class="muted">{{ favorite.created_date.strftime('%d.%m.%Y') }}</span></p>
+            {% else %}<p class="muted">Пока пусто.</p>{% endfor %}
+        </div>
+        <div class="panel mb-4">
+            <h2 class="h4">История просмотров</h2>
+            {% for item in history %}
+                <p><a href="{{ url_for('recipe_detail', recipe_id=item.recipe.id) }}">{{ item.recipe.title }}</a> <span class="muted">{{ item.viewed_at.strftime('%d.%m.%Y %H:%M') }}</span></p>
+            {% else %}<p class="muted">История появится после просмотра рецептов.</p>{% endfor %}
+        </div>
+        <div class="panel">
+            <h2 class="h4">Мои рецепты</h2>
+            {% for recipe in my_recipes %}
+                <p><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a> <span class="tag">{{ recipe.status }}</span></p>
+            {% else %}<p class="muted">Вы ещё не добавляли рецепты.</p>{% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

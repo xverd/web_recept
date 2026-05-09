@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Список покупок - CookBook{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="panel">
+            <h1 class="h4">Добавить продукт</h1>
+            <form method="post">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control") }}</div>
+                <div class="mb-3">{{ form.amount.label(class="form-label") }} {{ form.amount(class="form-control") }}</div>
+                {{ form.submit(class="btn btn-teal") }}
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="panel">
+            <h2 class="h4">Покупки</h2>
+            {% for item in items %}
+                <div class="d-flex justify-content-between align-items-center border-top py-2">
+                    <div {% if item.checked %}class="text-decoration-line-through muted"{% endif %}>
+                        <strong>{{ item.name }}</strong>
+                        {% if item.amount %}<span class="muted">— {{ item.amount }}</span>{% endif %}
+                        {% if item.recipe %}<div class="small muted">из рецепта: {{ item.recipe.title }}</div>{% endif %}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{{ url_for('toggle_shopping_item', item_id=item.id) }}"><button class="btn btn-outline-secondary btn-sm" type="submit">Готово</button></form>
+                        <form method="post" action="{{ url_for('delete_shopping_item', item_id=item.id) }}"><button class="btn btn-outline-danger btn-sm" type="submit">Удалить</button></form>
+                    </div>
+                </div>
+            {% else %}
+                <p class="muted">Список пуст. Можно добавить вручную или из рецепта.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

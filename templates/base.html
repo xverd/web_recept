@@ -1,56 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}CookBook{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .navbar-brand { font-weight: 700; color: #2196F3 !important; font-size: 1.5rem; }
-        .nav-link { font-weight: 500; color: #495057 !important; }
-        .nav-link:hover { color: #2196F3 !important; }
+        body { background: #f6f7f9; color: #1f2933; }
+        .navbar { border-bottom: 1px solid #e5e7eb; }
+        .brand { font-weight: 800; color: #0f766e !important; }
+        .page-title { font-weight: 800; letter-spacing: 0; }
+        .recipe-card { height: 100%; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: #fff; }
+        .recipe-card img, .recipe-hero { width: 100%; height: 220px; object-fit: cover; background: #e5e7eb; }
+        .tag { display: inline-block; border: 1px solid #cbd5e1; border-radius: 999px; padding: 2px 9px; margin: 2px; font-size: 13px; background: #fff; }
+        .panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 18px; }
+        .muted { color: #667085; }
+        .btn-teal { background: #0f766e; border-color: #0f766e; color: #fff; }
+        .btn-teal:hover { background: #115e59; border-color: #115e59; color: #fff; }
+        .avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; background: #e5e7eb; }
+        textarea.form-control { min-height: 120px; }
+        @media print { .no-print { display: none !important; } body { background: #fff; } .panel { border: 0; } }
     </style>
     {% block head %}{% endblock %}
 </head>
 <body>
-    <!-- ШАПКА -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">🍳 CookBook</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="#">Рецепты</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Избранное</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Коллекции</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Список покупок</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Добавить рецепт</a></li>
-                </ul>
-                <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="/profile">👤 {{ current_user.username }}</a></li>
-                        <li class="nav-item"><a class="nav-link text-danger" href="/logout">Выйти</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link btn btn-primary text-white ms-2 px-3" href="/login">Войти</a></li>
-                        <li class="nav-item"><a class="nav-link btn btn-primary text-white ms-2 px-3" href="/register">Регистрация</a></li>
+<nav class="navbar navbar-expand-lg bg-white sticky-top no-print">
+    <div class="container">
+        <a class="navbar-brand brand" href="{{ url_for('index') }}">CookBook</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Рецепты</a></li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('collections') }}">Коллекции</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('shopping') }}">Покупки</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('create_recipe') }}">Добавить рецепт</a></li>
+                    {% if current_user.is_admin %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">Админка</a></li>
                     {% endif %}
-                </ul>
-            </div>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">{{ current_user.username }}</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('logout') }}">Выйти</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Войти</a></li>
+                    <li class="nav-item"><a class="btn btn-teal ms-lg-2" href="{{ url_for('register') }}">Регистрация</a></li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
-
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
-    <div class="container mt-4 mb-5">
-        {% block content %}{% endblock %}
     </div>
+</nav>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {% block scripts %}{% endblock %}
+<main class="container py-4">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success no-print">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

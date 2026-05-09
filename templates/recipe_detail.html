@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}{{ recipe.title }} - CookBook{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="panel">
+            {% if recipe.image_url %}<img class="recipe-hero mb-3" src="{{ recipe.image_url }}" alt="{{ recipe.title }}">{% endif %}
+            <h1 class="page-title">{{ recipe.title }}</h1>
+            <p class="lead">{{ recipe.short_description }}</p>
+            <div class="mb-3">
+                <span class="tag">{{ recipe.cuisine }}</span>
+                <span class="tag">{{ recipe.dish_type }}</span>
+                <span class="tag">{{ recipe.difficulty }}</span>
+                <span class="tag">{{ recipe.cook_time }} мин</span>
+                <span class="tag">★ {{ recipe.avg_rating }}</span>
+                {% for tag in recipe.tags_list %}<span class="tag">{{ tag }}</span>{% endfor %}
+            </div>
+
+            <h2 class="h4 mt-4">Ингредиенты</h2>
+            <ul>{% for item in recipe.ingredients_list %}<li>{{ item }}</li>{% endfor %}</ul>
+
+            <h2 class="h4 mt-4">Приготовление</h2>
+            <ol>{% for step in recipe.steps_list %}<li class="mb-2">{{ step }}</li>{% endfor %}</ol>
+
+            {% if recipe.tips %}
+                <h2 class="h4 mt-4">Советы автора</h2>
+                <p>{{ recipe.tips }}</p>
+            {% endif %}
+            {% if recipe.video_url %}
+                <p><a href="{{ recipe.video_url }}" target="_blank" rel="noreferrer">Видео приготовления</a></p>
+            {% endif %}
+        </div>
+
+        <div class="panel mt-4">
+            <h2 class="h4">Отзывы</h2>
+            {% for review in recipe.reviews %}
+                <div class="border-top py-3">
+                    <strong>{{ review.user.name }}</strong> · ★ {{ review.rating }}
+                    <p class="mb-0">{{ review.text }}</p>
+                </div>
+            {% else %}
+                <p class="muted">Пока нет отзывов.</p>
+            {% endfor %}
+
+            {% if current_user.is_authenticated %}
+                <form method="post" class="mt-3">
+                    {{ review_form.hidden_tag() }}
+                    <div class="row g-2">
+                        <div class="col-md-2">{{ review_form.rating.label(class="form-label") }} {{ review_form.rating(class="form-select") }}</div>
+                        <div class="col-md-10">{{ review_form.text.label(class="form-label") }} {{ review_form.text(class="form-control") }}</div>
+                    </div>
+                    {{ review_form.submit(class="btn btn-teal mt-2") }}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <aside class="col-lg-4">
+        <div class="panel">
+            <div class="d-grid gap-2">
+                <a class="btn btn-outline-dark" href="{{ url_for('print_recipe', recipe_id=recipe.id) }}">Версия для печати</a>
+                <a class="btn btn-outline-dark" target="_blank" rel="noreferrer" href="https://yandex.ru/maps/?text={{ recipe.title | urlencode }}">Найти рестораны на Яндекс Картах</a>
+                {% if current_user.is_authenticated %}
+                    <form method="post" action="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+                        <button class="btn {% if is_favorite %}btn-danger{% else %}btn-teal{% endif %} w-100" type="submit">
+                            {% if is_favorite %}Удалить из избранного{% else %}В избранное{% endif %}
+                        </button>
+                    </form>
+                    <form method="post" action="{{ url_for('shopping_from_recipe', recipe_id=recipe.id) }}">
+                        <button class="btn btn-outline-dark w-100" type="submit">В список покупок</button>
+                    </form>
+                    {% if user_collections %}
+                        <hr>
+                        <p class="fw-bold mb-2">Добавить в коллекцию</p>
+                        {% for collection in user_collections %}
+                            <form method="post" class="mb-2" action="{{ url_for('add_to_collection', collection_id=collection.id, recipe_id=recipe.id) }}">
+                                <button class="btn btn-outline-secondary btn-sm w-100" type="submit">{{ collection.title }}</button>
+                            </form>
+                        {% endfor %}
+                    {% endif %}
+                    {% if current_user.id == recipe.author_id or current_user.is_admin %}
+                        <a class="btn btn-outline-dark" href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}">Редактировать</a>
+                    {% endif %}
+                {% else %}
+                    <a class="btn btn-teal" href="{{ url_for('login') }}">Войти для сохранения</a>
+                {% endif %}
+            </div>
+            <hr>
+            <p class="small muted mb-0">Просмотров: {{ recipe.views }}. Автор: {{ recipe.author.name if recipe.author else "CookBook" }}.</p>
+            {% if recipe.status != "approved" %}<p class="small text-warning mb-0">Статус: {{ recipe.status }}</p>{% endif %}
+        </div>
+    </aside>
+</div>
+{% endblock %}

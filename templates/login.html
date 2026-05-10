@@ -1,19 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Вход - CookBook{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5 col-lg-4">
-        <div class="panel">
-            <h1 class="h3 mb-3">Вход</h1>
-            <form method="post">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">{{ form.username.label(class="form-label") }} {{ form.username(class="form-control") }}</div>
-                <div class="mb-3">{{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}</div>
-                {% if message %}<div class="alert alert-danger">{{ message }}</div>{% endif %}
-                {{ form.submit(class="btn btn-teal w-100") }}
-            </form>
-        </div>
-    </div>
-</div>
+<div class="row justify-content-center"><div class="col-md-5 col-lg-4"><div class="panel">
+    <h1 class="h3 mb-3">Вход</h1>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.username.label(class="form-label") }} {{ form.username(class="form-control") }}</div>
+        <div class="mb-3">{{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}</div>
+        {% if message %}<div class="alert alert-danger">{{ message }}</div>{% endif %}
+        {{ form.submit(class="btn btn-teal w-100") }}
+    </form>
+    <p class="small muted mt-3 mb-0">Для проверки админки: логин admin, пароль admin123.</p>
+</div></div></div>
 {% endblock %}

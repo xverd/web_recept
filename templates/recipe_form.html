@@ -1,24 +1,23 @@
 {% extends "base.html" %}
 {% block title %}{{ title }} - CookBook{% endblock %}
-
 {% block content %}
 <div class="panel">
-    <h1 class="page-title mb-3">{{ title }}</h1>
+    <h1 class="fw-bold mb-3">{{ title }}</h1>
     <form method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div class="row g-3">
-            <div class="col-md-8">{{ form.title.label(class="form-label") }} {{ form.title(class="form-control") }}</div>
-            <div class="col-md-4">{{ form.cook_time.label(class="form-label") }} {{ form.cook_time(class="form-control") }}</div>
-            <div class="col-12">{{ form.short_description.label(class="form-label") }} {{ form.short_description(class="form-control") }}</div>
+            <div class="col-md-8">{{ form.title.label(class="form-label") }} {{ form.title(class="form-control", maxlength="160") }}</div>
+            <div class="col-md-4">{{ form.cook_time.label(class="form-label") }} {{ form.cook_time(class="form-control", min="1", step="1") }}</div>
+            <div class="col-12">{{ form.short_description.label(class="form-label") }} {{ form.short_description(class="form-control", maxlength="500") }}</div>
             <div class="col-md-6">{{ form.ingredients.label(class="form-label") }} {{ form.ingredients(class="form-control", placeholder="Мука - 200 г") }}</div>
             <div class="col-md-6">{{ form.steps.label(class="form-label") }} {{ form.steps(class="form-control", placeholder="Каждый шаг с новой строки") }}</div>
-            <div class="col-md-4">{{ form.cuisine.label(class="form-label") }} {{ form.cuisine(class="form-control") }}</div>
-            <div class="col-md-4">{{ form.dish_type.label(class="form-label") }} {{ form.dish_type(class="form-control") }}</div>
+            <div class="col-md-4">{{ form.cuisine.label(class="form-label") }} {{ form.cuisine(class="form-control", maxlength="80") }}</div>
+            <div class="col-md-4">{{ form.dish_type.label(class="form-label") }} {{ form.dish_type(class="form-control", maxlength="80") }}</div>
             <div class="col-md-4">{{ form.difficulty.label(class="form-label") }} {{ form.difficulty(class="form-select") }}</div>
-            <div class="col-md-6">{{ form.image_url.label(class="form-label") }} {{ form.image_url(class="form-control") }}</div>
+            <div class="col-md-6">{{ form.image_url.label(class="form-label") }} {{ form.image_url(class="form-control", maxlength="300") }}</div>
             <div class="col-md-6">{{ form.image_file.label(class="form-label") }} {{ form.image_file(class="form-control") }}</div>
-            <div class="col-md-6">{{ form.video_url.label(class="form-label") }} {{ form.video_url(class="form-control") }}</div>
-            <div class="col-md-6">{{ form.tags.label(class="form-label") }} {{ form.tags(class="form-control") }}</div>
+            <div class="col-md-6">{{ form.video_url.label(class="form-label") }} {{ form.video_url(class="form-control", maxlength="300") }}</div>
+            <div class="col-md-6">{{ form.tags.label(class="form-label") }} {{ form.tags(class="form-control", maxlength="250") }}</div>
             <div class="col-12">{{ form.tips.label(class="form-label") }} {{ form.tips(class="form-control") }}</div>
         </div>
         {{ form.submit(class="btn btn-teal mt-3") }}

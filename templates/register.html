@@ -1,27 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Регистрация - CookBook{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="panel">
-            <h1 class="h3 mb-3">Регистрация</h1>
-            <form method="post">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">{{ form.username.label(class="form-label") }} {{ form.username(class="form-control") }}</div>
-                <div class="mb-3">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control") }}</div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">{{ form.email.label(class="form-label") }} {{ form.email(class="form-control") }}</div>
-                    <div class="col-md-6 mb-3">{{ form.phone.label(class="form-label") }} {{ form.phone(class="form-control") }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">{{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}</div>
-                    <div class="col-md-6 mb-3">{{ form.password_again.label(class="form-label") }} {{ form.password_again(class="form-control") }}</div>
-                </div>
-                {% if message %}<div class="alert alert-danger">{{ message }}</div>{% endif %}
-                {{ form.submit(class="btn btn-teal w-100") }}
-            </form>
+<div class="row justify-content-center"><div class="col-md-6 col-lg-5"><div class="panel">
+    <h1 class="h3 mb-3">Регистрация</h1>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.username.label(class="form-label") }} {{ form.username(class="form-control") }}</div>
+        <div class="mb-3">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control") }}</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">{{ form.email.label(class="form-label") }} {{ form.email(class="form-control") }}</div>
+            <div class="col-md-6 mb-3">{{ form.phone.label(class="form-label") }} {{ form.phone(class="form-control", type="tel", inputmode="numeric", pattern="[0-9]+", maxlength="15", placeholder="79990000000") }}</div>
         </div>
-    </div>
-</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">{{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}</div>
+            <div class="col-md-6 mb-3">{{ form.password_again.label(class="form-label") }} {{ form.password_again(class="form-control") }}</div>
+        </div>
+        {% for field in [form.phone, form.password, form.username] %}{% for error in field.errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}{% endfor %}
+        {% if message %}<div class="alert alert-danger">{{ message }}</div>{% endif %}
+        {{ form.submit(class="btn btn-teal w-100") }}
+    </form>
+</div></div></div>
 {% endblock %}

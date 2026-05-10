@@ -1,58 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Админка - CookBook{% endblock %}
-
 {% block content %}
-<h1 class="page-title mb-4">Админка</h1>
+<h1 class="fw-bold mb-4">Админка</h1>
 <div class="row g-4">
-    <div class="col-lg-7">
-        <div class="panel mb-4">
-            <h2 class="h4">Модерация рецептов</h2>
-            {% for recipe in pending %}
-                <div class="border-top py-3">
-                    <strong>{{ recipe.title }}</strong>
-                    <p class="muted">{{ recipe.short_description }}</p>
-                    <div class="d-flex gap-2">
-                        <a class="btn btn-outline-dark btn-sm" href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">Открыть</a>
-                        <form method="post" action="{{ url_for('moderate_recipe', recipe_id=recipe.id, action='approve') }}"><button class="btn btn-success btn-sm" type="submit">Одобрить</button></form>
-                        <form method="post" action="{{ url_for('moderate_recipe', recipe_id=recipe.id, action='reject') }}"><button class="btn btn-outline-danger btn-sm" type="submit">Отклонить</button></form>
-                    </div>
-                </div>
-            {% else %}<p class="muted">Очередь пуста.</p>{% endfor %}
-        </div>
-        <div class="panel">
-            <h2 class="h4">Пользователи</h2>
-            {% for user in users %}
-                <div class="d-flex justify-content-between border-top py-2">
-                    <div>{{ user.username }} <span class="tag">{{ user.role }}</span> {% if user.is_blocked %}<span class="tag">заблокирован</span>{% endif %}</div>
-                    {% if user.id != current_user.id %}
-                        <form method="post" action="{{ url_for('block_user', user_id=user.id) }}">
-                            <button class="btn btn-outline-danger btn-sm" type="submit">{% if user.is_blocked %}Разблокировать{% else %}Заблокировать{% endif %}</button>
-                        </form>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="col-lg-5">
-        <div class="panel mb-4">
-            <h2 class="h4">Категории</h2>
-            <form method="post" class="mb-3">
-                {{ category_form.hidden_tag() }}
-                <div class="mb-2">{{ category_form.name(class="form-control", placeholder="Название") }}</div>
-                <div class="mb-2">{{ category_form.kind(class="form-select") }}</div>
-                {{ category_form.submit(class="btn btn-teal btn-sm") }}
-            </form>
-            {% for category in categories %}<span class="tag">{{ category.kind }}: {{ category.name }}</span>{% endfor %}
-        </div>
-        <div class="panel">
-            <h2 class="h4">Теги</h2>
-            <form method="post" class="mb-3">
-                {{ tag_form.hidden_tag() }}
-                <div class="mb-2">{{ tag_form.name(class="form-control", placeholder="Название") }}</div>
-                {{ tag_form.submit(class="btn btn-teal btn-sm") }}
-            </form>
-            {% for tag in tags %}<span class="tag">{{ tag.name }}</span>{% endfor %}
-        </div>
-    </div>
+    <div class="col-lg-7"><div class="panel mb-4"><h2 class="h4">Модерация</h2>{% for recipe in pending %}<div class="border-top py-3"><strong>{{ recipe.title }}</strong><p class="muted">{{ recipe.short_description }}</p><div class="d-flex gap-2"><a class="btn btn-outline-dark btn-sm" href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">Открыть</a><form method="post" action="{{ url_for('moderate_recipe', recipe_id=recipe.id, action='approve') }}"><button class="btn btn-success btn-sm" type="submit">Одобрить</button></form><form method="post" action="{{ url_for('moderate_recipe', recipe_id=recipe.id, action='reject') }}"><button class="btn btn-outline-danger btn-sm" type="submit">Отклонить</button></form></div></div>{% else %}<p class="muted">Очередь пустая.</p>{% endfor %}</div><div class="panel"><h2 class="h4">Пользователи</h2>{% for user in users %}<div class="d-flex justify-content-between border-top py-2"><div>{{ user.username }} <span class="tag">{{ user.role }}</span> {% if user.is_blocked %}<span class="tag">заблокирован</span>{% endif %}</div>{% if user.id != current_user.id %}<form method="post" action="{{ url_for('block_user', user_id=user.id) }}"><button class="btn btn-outline-danger btn-sm" type="submit">{% if user.is_blocked %}Разблокировать{% else %}Заблокировать{% endif %}</button></form>{% endif %}</div>{% endfor %}</div></div>
+    <div class="col-lg-5"><div class="panel mb-4"><h2 class="h4">Категории</h2><form method="post" class="mb-3">{{ category_form.hidden_tag() }}{{ category_form.name(class="form-control mb-2", maxlength="80", placeholder="Название") }}{{ category_form.kind(class="form-select mb-2") }}{{ category_form.submit(class="btn btn-teal btn-sm") }}</form>{% for category in categories %}<span class="tag">{{ category.kind }}: {{ category.name }}</span>{% endfor %}</div><div class="panel"><h2 class="h4">Теги</h2><form method="post" class="mb-3">{{ tag_form.hidden_tag() }}{{ tag_form.name(class="form-control mb-2", maxlength="80", placeholder="Название") }}{{ tag_form.submit(class="btn btn-teal btn-sm") }}</form>{% for tag in tags %}<span class="tag">{{ tag.name }}</span>{% endfor %}</div></div>
 </div>
 {% endblock %}

@@ -1,40 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Коллекции - CookBook{% endblock %}
-
 {% block content %}
 <div class="row g-4">
-    <div class="col-lg-4">
-        <div class="panel">
-            <h1 class="h4">Новая коллекция</h1>
-            <form method="post">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">{{ form.title.label(class="form-label") }} {{ form.title(class="form-control") }}</div>
-                <div class="mb-3">{{ form.description.label(class="form-label") }} {{ form.description(class="form-control") }}</div>
-                {{ form.submit(class="btn btn-teal") }}
-            </form>
-        </div>
-    </div>
-    <div class="col-lg-8">
-        {% for collection in collections %}
-            <div class="panel mb-3">
-                <div class="d-flex justify-content-between gap-3">
-                    <div>
-                        <h2 class="h5">{{ collection.title }}</h2>
-                        <p class="muted">{{ collection.description }}</p>
-                    </div>
-                    <form method="post" action="{{ url_for('delete_collection', collection_id=collection.id) }}">
-                        <button class="btn btn-outline-danger btn-sm" type="submit">Удалить</button>
-                    </form>
-                </div>
-                {% for recipe in collection.recipes %}
-                    <a class="tag" href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a>
-                {% else %}
-                    <p class="muted mb-0">Добавляйте рецепты в коллекцию со страницы рецепта.</p>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="panel">Коллекций пока нет.</div>
-        {% endfor %}
-    </div>
+    <div class="col-lg-4"><div class="panel"><h1 class="h4">Новая коллекция</h1><form method="post">{{ form.hidden_tag() }}<div class="mb-3">{{ form.title.label(class="form-label") }} {{ form.title(class="form-control", maxlength="120") }}</div><div class="mb-3">{{ form.description.label(class="form-label") }} {{ form.description(class="form-control", maxlength="400") }}</div>{{ form.submit(class="btn btn-teal") }}</form></div></div>
+    <div class="col-lg-8">{% for collection in collections %}<div class="panel mb-3"><div class="d-flex justify-content-between gap-3"><div><h2 class="h5 text-break-good">{{ collection.title }}</h2><p class="muted text-break-good">{{ collection.description }}</p></div><form method="post" action="{{ url_for('delete_collection', collection_id=collection.id) }}"><button class="btn btn-outline-danger btn-sm" type="submit">Удалить</button></form></div>{% for recipe in collection.recipes %}<a class="tag" href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a>{% else %}<p class="muted mb-0">Коллекция пустая.</p>{% endfor %}</div>{% else %}<div class="panel">Коллекций пока нет.</div>{% endfor %}</div>
 </div>
 {% endblock %}

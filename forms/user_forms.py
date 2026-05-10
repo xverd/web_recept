@@ -1,22 +1,17 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import (
-    EmailField,
-    IntegerField,
-    PasswordField,
-    SelectField,
-    StringField,
-    SubmitField,
-    TextAreaField,
-)
-from wtforms.validators import DataRequired, Length, NumberRange, Optional
+from wtforms import EmailField, IntegerField, PasswordField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Length, NumberRange, Optional, Regexp
+
+
+phone_rule = Regexp(r"^\d+$", message="Телефон должен состоять только из цифр")
 
 
 class RegisterForm(FlaskForm):
     username = StringField("Логин", validators=[DataRequired(), Length(min=3, max=80)])
     name = StringField("Имя", validators=[DataRequired(), Length(max=120)])
     email = EmailField("Почта", validators=[Optional(), Length(max=120)])
-    phone = StringField("Телефон", validators=[Optional(), Length(max=40)])
+    phone = StringField("Телефон", validators=[Optional(), Length(min=10, max=15), phone_rule])
     password = PasswordField("Пароль", validators=[DataRequired(), Length(min=6)])
     password_again = PasswordField("Повторите пароль", validators=[DataRequired()])
     submit = SubmitField("Зарегистрироваться")
@@ -31,7 +26,7 @@ class LoginForm(FlaskForm):
 class ProfileForm(FlaskForm):
     name = StringField("Имя", validators=[DataRequired(), Length(max=120)])
     email = EmailField("Почта", validators=[Optional(), Length(max=120)])
-    phone = StringField("Телефон", validators=[Optional(), Length(max=40)])
+    phone = StringField("Телефон", validators=[Optional(), Length(min=10, max=15), phone_rule])
     avatar_url = StringField("Ссылка на аватар", validators=[Optional(), Length(max=300)])
     password = PasswordField("Новый пароль", validators=[Optional(), Length(min=6)])
     submit = SubmitField("Сохранить")
@@ -43,9 +38,9 @@ class RecipeForm(FlaskForm):
     ingredients = TextAreaField("Ингредиенты", validators=[DataRequired()])
     steps = TextAreaField("Шаги приготовления", validators=[DataRequired()])
     tips = TextAreaField("Советы автора", validators=[Optional()])
-    image_url = StringField("Ссылка на фото", validators=[Optional(), Length(max=500)])
-    image_file = FileField("Или загрузите фото", validators=[Optional(), FileAllowed(["jpg", "jpeg", "png", "webp"])])
-    video_url = StringField("Ссылка на видео", validators=[Optional(), Length(max=500)])
+    image_url = StringField("Ссылка на фото", validators=[Optional(), Length(max=300)])
+    image_file = FileField("Или загрузите фото", validators=[Optional(), FileAllowed(["jpg", "jpeg", "png", "webp", "svg"])])
+    video_url = StringField("Ссылка на видео", validators=[Optional(), Length(max=300)])
     cuisine = StringField("Кухня мира", validators=[DataRequired(), Length(max=80)])
     dish_type = StringField("Тип блюда", validators=[DataRequired(), Length(max=80)])
     difficulty = SelectField("Сложность", choices=[("Легко", "Легко"), ("Средне", "Средне"), ("Сложно", "Сложно")])
@@ -67,17 +62,14 @@ class ReviewForm(FlaskForm):
 
 
 class ShoppingItemForm(FlaskForm):
-    name = StringField("Продукт", validators=[DataRequired(), Length(max=200)])
-    amount = StringField("Количество", validators=[Optional(), Length(max=120)])
+    name = StringField("Продукт", validators=[DataRequired(), Length(max=80)])
+    amount = StringField("Количество", validators=[Optional(), Length(max=40)])
     submit = SubmitField("Добавить")
 
 
 class AdminCategoryForm(FlaskForm):
     name = StringField("Название", validators=[DataRequired(), Length(max=80)])
-    kind = SelectField(
-        "Тип",
-        choices=[("cuisine", "Кухня мира"), ("dish_type", "Тип блюда"), ("difficulty", "Сложность")],
-    )
+    kind = SelectField("Тип", choices=[("cuisine", "Кухня"), ("dish_type", "Тип блюда"), ("difficulty", "Сложность")])
     submit = SubmitField("Добавить категорию")
 
 

@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ recipe.title }} - CookBook{% endblock %}
-{% block head %}
-<script src="https://api-maps.yandex.ru/2.1/?apikey={{ yandex_maps_api_key }}&lang=ru_RU"></script>
-{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="panel">
-            {% if recipe.image_url %}<img class="recipe-img mb-3" src="{{ recipe.image_url }}" alt="{{ recipe.title }}">{% endif %}
+            {% if recipe.image_url %}<div class="recipe-hero mb-3"><img src="{{ recipe.image_url }}" alt="{{ recipe.title }}"></div>{% endif %}
             <h1 class="fw-bold text-break-good">{{ recipe.title }}</h1>
             <p class="lead text-break-good">{{ recipe.short_description }}</p>
             <div class="mb-3">
@@ -61,38 +58,13 @@
         <div class="panel mt-4">
             <h2 class="h5">Где заказать в Москве</h2>
             <p class="small muted">Карта ищет ближайшие рестораны и кафе по запросу: {{ recipe.title }}.</p>
-            <div id="restaurant-map" class="map-box" data-search-city="Moscow"></div>
+            {% set map_search = ('Москва рестораны заказать ' ~ recipe.title)[:220] %}
+            <div class="map-box">
+                <iframe title="Где заказать в Москве" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    src="https://yandex.ru/map-widget/v1/?ll=37.618423%2C55.751244&amp;z=11&amp;text={{ map_search|urlencode }}"></iframe>
+            </div>
             <a class="btn btn-outline-dark w-100 mt-3" target="_blank" rel="noreferrer" href="https://yandex.ru/maps/213/moscow/search/{{ ('рестораны заказать ' ~ recipe.title) | urlencode }}">Открыть поиск в Яндекс Картах</a>
         </div>
     </aside>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    const dishName = {{ recipe.title|tojson }};
-    const searchText = "Москва рестораны заказать " + dishName;
-
-    ymaps.ready(function () {
-        const map = new ymaps.Map("restaurant-map", {
-            center: [55.751244, 37.618423],
-            zoom: 11,
-            controls: ["zoomControl", "fullscreenControl"]
-        });
-
-        const searchControl = new ymaps.control.SearchControl({
-            options: {
-                provider: "yandex#search",
-                noPlacemark: false,
-                noPopup: false,
-                results: 10,
-                boundedBy: [[55.45, 37.20], [56.05, 38.05]],
-                strictBounds: false
-            }
-        });
-
-        map.controls.add(searchControl);
-        searchControl.search(searchText);
-    });
-</script>
 {% endblock %}

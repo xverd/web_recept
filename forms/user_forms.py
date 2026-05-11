@@ -6,6 +6,12 @@ from wtforms.validators import DataRequired, Length, NumberRange, Optional, Rege
 
 phone_rule = Regexp(r"^\d+$", message="Телефон должен состоять только из цифр")
 
+# Количество: только цифры и типичные разделители (без букв).
+shopping_amount_rule = Regexp(
+    r"^[\d\s.,+\-\/]*$",
+    message="В количестве допустимы только цифры и знаки пробел . , + - /",
+)
+
 
 class RegisterForm(FlaskForm):
     username = StringField("Логин", validators=[DataRequired(), Length(min=3, max=80)])
@@ -63,7 +69,7 @@ class ReviewForm(FlaskForm):
 
 class ShoppingItemForm(FlaskForm):
     name = StringField("Продукт", validators=[DataRequired(), Length(max=80)])
-    amount = StringField("Количество", validators=[Optional(), Length(max=40)])
+    amount = StringField("Количество", validators=[Optional(), Length(max=40), shopping_amount_rule])
     submit = SubmitField("Добавить")
 
 

@@ -25,7 +25,8 @@ from forms.user_forms import (
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "cookbook_secret_key"
 app.config["UPLOAD_FOLDER"] = os.path.join("static", "images")
-app.config["YANDEX_MAPS_API_KEY"] = "f3a0fe3a-b07e-4840-a1da-06f18b2ddf13"
+# Резерв для других сценариев; карта на странице рецепта — встроенный виджет map-widget (поиск без JS API).
+app.config["YANDEX_MAPS_API_KEY"] = os.environ.get("YANDEX_MAPS_API_KEY", "f3a0fe3a-b07e-4840-a1da-06f18b2ddf13")
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -172,7 +173,6 @@ def recipe_detail(recipe_id):
         review_form=form,
         is_favorite=is_favorite,
         user_collections=collections,
-        yandex_maps_api_key=app.config["YANDEX_MAPS_API_KEY"],
     )
 
 

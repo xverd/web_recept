@@ -24,7 +24,7 @@
     {% for recipe in recipes %}
         <div class="col-md-6 col-xl-4">
             <article class="recipe-card">
-                {% if recipe.image_url %}<img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">{% endif %}
+                {% if recipe.image_url %}<div class="recipe-card-media"><img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" loading="lazy"></div>{% endif %}
                 <div class="p-3">
                     <h2 class="h5 text-break-good">{{ recipe.title }}</h2>
                     <p class="muted text-break-good">{{ recipe.short_description }}</p>

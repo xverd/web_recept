@@ -11,13 +11,48 @@
         .brand { color: #0f766e !important; font-weight: 800; }
         .panel { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 18px; }
         .recipe-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; height: 100%; }
-        .recipe-card img, .recipe-img { width: 100%; height: 220px; object-fit: cover; background: #e5e7eb; }
+        .recipe-card-media {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: #e5e7eb;
+        }
+        .recipe-card-media img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+        }
+        .recipe-hero {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 480px;
+            min-height: 200px;
+            overflow: hidden;
+            background: #e5e7eb;
+            border-radius: 8px;
+        }
+        .recipe-hero img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+        }
         .tag { display: inline-block; padding: 2px 9px; border: 1px solid #cbd5e1; border-radius: 999px; font-size: 13px; margin: 2px; }
         .muted { color: #667085; }
         .btn-teal { background: #0f766e; border-color: #0f766e; color: white; }
         .btn-teal:hover { background: #115e59; border-color: #115e59; color: white; }
         .text-break-good { overflow-wrap: anywhere; word-break: break-word; }
         .map-box { width: 100%; height: 420px; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; background: #eef2f7; }
+        .map-box iframe { width: 100%; height: 100%; border: 0; display: block; }
         textarea.form-control { min-height: 120px; }
         @media print { .no-print { display: none !important; } body { background: white; } .panel { border: 0; } }
     </style>

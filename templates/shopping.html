@@ -2,7 +2,59 @@
 {% block title %}Список покупок - CookBook{% endblock %}
 {% block content %}
 <div class="row g-4">
-    <div class="col-lg-4"><div class="panel"><h1 class="h4">Добавить продукт</h1><form method="post">{{ form.hidden_tag() }}<div class="mb-3">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control", maxlength="80") }}</div><div class="mb-3">{{ form.amount.label(class="form-label") }} {{ form.amount(class="form-control", maxlength="40") }}</div>{{ form.submit(class="btn btn-teal") }}</form><p class="small muted mt-3 mb-0">Продукт до 80 символов, количество до 40.</p></div></div>
-    <div class="col-lg-8"><div class="panel"><h2 class="h4">Покупки</h2>{% for item in items %}<div class="d-flex justify-content-between align-items-center border-top py-2 gap-3"><div class="text-break-good {% if item.checked %}text-decoration-line-through muted{% endif %}"><strong>{{ item.name }}</strong>{% if item.amount %}<span class="muted"> — {{ item.amount }}</span>{% endif %}{% if item.recipe %}<div class="small muted">из рецепта: {{ item.recipe.title }}</div>{% endif %}</div><div class="d-flex gap-2"><form method="post" action="{{ url_for('toggle_shopping_item', item_id=item.id) }}"><button class="btn btn-outline-secondary btn-sm" type="submit">Готово</button></form><form method="post" action="{{ url_for('delete_shopping_item', item_id=item.id) }}"><button class="btn btn-outline-danger btn-sm" type="submit">Удалить</button></form></div></div>{% else %}<p class="muted">Список пуст.</p>{% endfor %}</div></div>
+    <div class="col-lg-4">
+        <div class="panel">
+            <h1 class="h4">Добавить продукт</h1>
+            <form method="post" id="shopping-add-form">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control", maxlength="80") }}</div>
+                <div class="mb-3">
+                    {{ form.amount.label(class="form-label") }}
+                    {{ form.amount(class="form-control", id="shopping-amount", maxlength="40", inputmode="decimal", autocomplete="off", spellcheck="false", title="Только цифры и знаки . , + - /") }}
+                    {% for err in form.amount.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+                </div>
+                {{ form.submit(class="btn btn-teal") }}
+            </form>
+            <p class="small muted mt-3 mb-0">Продукт до 80 символов. Количество — до 40 символов, только цифры и знаки . , + - /</p>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="panel">
+            <h2 class="h4">Покупки</h2>
+            {% for item in items %}
+                <div class="d-flex justify-content-between align-items-center border-top py-2 gap-3">
+                    <div class="text-break-good {% if item.checked %}text-decoration-line-through muted{% endif %}">
+                        <strong>{{ item.name }}</strong>
+                        {% if item.amount %}<span class="muted"> — {{ item.amount }}</span>{% endif %}
+                        {% if item.recipe %}<div class="small muted">из рецепта: {{ item.recipe.title }}</div>{% endif %}
+                    </div>
+                    <div class="d-flex gap-2 flex-shrink-0">
+                        <form method="post" action="{{ url_for('toggle_shopping_item', item_id=item.id) }}"><button class="btn btn-outline-secondary btn-sm" type="submit">Готово</button></form>
+                        <form method="post" action="{{ url_for('delete_shopping_item', item_id=item.id) }}"><button class="btn btn-outline-danger btn-sm" type="submit">Удалить</button></form>
+                    </div>
+                </div>
+            {% else %}
+                <p class="muted">Список пуст.</p>
+            {% endfor %}
+        </div>
+    </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+    var el = document.getElementById("shopping-amount");
+    if (!el) return;
+    var allowed = /^[\d\s.,+\-\/]*$/;
+    el.addEventListener("beforeinput", function (e) {
+        if (e.data == null) return;
+        var next = el.value.slice(0, el.selectionStart) + e.data + el.value.slice(el.selectionEnd);
+        if (!allowed.test(next)) e.preventDefault();
+    });
+    el.addEventListener("paste", function (e) {
+        var t = (e.clipboardData || window.clipboardData).getData("text") || "";
+        if (!allowed.test(t)) e.preventDefault();
+    });
+})();
+</script>
 {% endblock %}
